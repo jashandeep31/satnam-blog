@@ -1,0 +1,50 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  title     String
+  type      NotificationType
+  link      String
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+}
+
+enum NotificationType {
+  UPDATE
+  LATEST
+}
+
+model Post {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  tags        String[]
+  company     String
+  views       Int      @default(0)
+  private     Boolean  @default(false)
+  deleted     Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum CategoryType {
+  ADMIT_CARD
+  RESULT
+  JOB
+  IMPORTANT
+  ANSWER_KEY
+}
