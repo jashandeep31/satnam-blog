@@ -1,31 +1,49 @@
+import { db } from "@/lib/db";
+import { Post } from "@prisma/client";
 import { Dot, Search } from "lucide-react";
 import React from "react";
+import Link from "next/link";
+import AsideBar from "@/components/aside-bar";
 
-const page = () => {
-  const Card = () => (
-    <div className="border rounded p-3 flex gap-2 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 hover:scale-[101%] duration-300 ">
+const postsFunction = async () => {
+  return await db.post.findMany({
+    orderBy: {
+      updatedAt: "desc",
+    },
+  });
+};
+const page = async () => {
+  const posts = await postsFunction();
+  const Card = ({ post }: { post: Post }) => (
+    <Link
+      href={`/${post.id}`}
+      className="border rounded p-3 flex gap-2 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 hover:scale-[101%] duration-300 "
+    >
       <div>
-        <div className="w-8 h-8 bg-slate-300 rounded-full "></div>
+        <div
+          className="w-8 h-8 bg-slate-300 rounded-full flex
+        items-center justify-center"
+        >
+          <span className="text-lg font-bold">{post.title[0]}</span>
+        </div>
       </div>
       <div>
-        <p className="text-sm text-muted-foreground italic">PSPCL</p>
-        <h3 className="text-lg font-bold">PSPCL looking for line mans</h3>
+        <p className="text-sm text-muted-foreground italic">{post.company}</p>
+        <h3 className="text-lg font-bold">{post.title}</h3>
 
         <ul className="flex gap-2 flex-wrap text-sm text-muted-foreground mt-3">
-          <li className="flex items-center">
-            <Dot className="inline" size={20} /> Govt Job
-          </li>
-          <li className="flex items-center">
-            <Dot className="inline" size={20} /> start pay 46k
-          </li>
-          <li className="flex items-center">
-            <Dot className="inline" size={20} /> End date december this month
-          </li>
+          {post.tags.split(",").map((tag) => (
+            <li className="flex items-center" key={tag}>
+              <Dot className="inline" size={20} /> {tag}
+            </li>
+          ))}
         </ul>
 
-        <p className=" text-xs text-muted-foreground mt-7 pl-3">Updated At:</p>
+        <p className=" text-xs text-muted-foreground mt-7 pl-3">
+          Updated At: {post.updatedAt.toLocaleDateString()}{" "}
+        </p>
       </div>
-    </div>
+    </Link>
   );
 
   return (
@@ -42,91 +60,12 @@ const page = () => {
           </div>
 
           <div className="mt-6 grid gap-3">
-            <Card />
-            <Card />
-            <Card />
-            <Card />
+            {posts.map((post: Post) => (
+              <Card key={post.id} post={post} />
+            ))}
           </div>
         </div>
-        <aside className="md:col-span-2">
-          <div className="flex flex-wrap  gap-1 mb-3 justify-end ">
-            <input
-              type="text"
-              className=" border block  border-primary/30  py-1 px-2"
-            />
-            <button className="bg-primary text-white  px-2">
-              <Search size={20} />
-            </button>
-          </div>
-          <div className="border ">
-            <h2 className="bg-primary py-3 text-white text-lg  text-center font-bold">
-              Notifications
-            </h2>
-            <div>
-              <ul className="max-h-48 overflow-auto">
-                <li className="border-b text-sm text-blue-500 py-2 px-1 underline">
-                  Upate: Application date got extended till teh end of this
-                  month
-                </li>
-
-                <li className="border-b text-sm text-blue-500 py-2 px-1 underline">
-                  Upate: Application date got extended till teh end of this
-                  month
-                </li>
-                <li className="border-b text-sm text-blue-500 py-2 px-1 underline">
-                  Upate: Application date got extended till teh end of this
-                  month
-                </li>
-                <li className="border-b text-sm text-blue-500 py-2 px-1 underline">
-                  Upate: Application date got extended till teh end of this
-                  month
-                </li>
-                <li className="border-b text-sm text-blue-500 py-2 px-1 underline">
-                  Upate: Application date got extended till teh end of this
-                  month
-                </li>
-                <li className="border-b text-sm text-blue-500 py-2 px-1 underline">
-                  Upate: Application date got extended till teh end of this
-                  month
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="border mt-12">
-            <h2 className="bg-primary py-3 text-white text-lg  text-center font-bold">
-              Admin cards
-            </h2>
-            <div>
-              <ul className="max-h-48 overflow-auto">
-                <li className="border-b text-sm text-blue-500 py-2 px-1 underline">
-                  Upate: Application date got extended till teh end of this
-                  month
-                </li>
-
-                <li className="border-b text-sm text-blue-500 py-2 px-1 underline">
-                  Upate: Application date got extended till teh end of this
-                  month
-                </li>
-                <li className="border-b text-sm text-blue-500 py-2 px-1 underline">
-                  Upate: Application date got extended till teh end of this
-                  month
-                </li>
-                <li className="border-b text-sm text-blue-500 py-2 px-1 underline">
-                  Upate: Application date got extended till teh end of this
-                  month
-                </li>
-                <li className="border-b text-sm text-blue-500 py-2 px-1 underline">
-                  Upate: Application date got extended till teh end of this
-                  month
-                </li>
-                <li className="border-b text-sm text-blue-500 py-2 px-1 underline">
-                  Upate: Application date got extended till teh end of this
-                  month
-                </li>
-              </ul>
-            </div>
-          </div>
-        </aside>
+        <AsideBar />
       </div>
     </div>
   );

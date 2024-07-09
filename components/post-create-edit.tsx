@@ -54,7 +54,6 @@ import {
   LinkImage,
   List,
   ListProperties,
-  Markdown,
   MediaEmbed,
   Mention,
   PageBreak,
@@ -84,14 +83,11 @@ import {
   TableToolbar,
   TextPartLanguage,
   TextTransformation,
-  Title,
   TodoList,
   Underline,
   Undo,
 } from "ckeditor5";
-
 import "ckeditor5/ckeditor5.css";
-// import "ckeditor5-premium-features/ckeditor5-premium-features.css";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -115,7 +111,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-label";
 import { toast } from "sonner";
-import { createPost } from "@/actions";
+import { createPost, updatePost } from "@/actions";
+import { Post } from "@prisma/client";
 const CATEGORIES = [
   "ADMIT_CARD",
   "RESULT",
@@ -123,6 +120,7 @@ const CATEGORIES = [
   "IMPORTANT",
   "ANSWER_KEY",
 ] as const;
+
 const formSchema = z.object({
   title: z
     .string()
@@ -147,19 +145,41 @@ const formSchema = z.object({
   category: z.enum(CATEGORIES),
 });
 
-const Page = () => {
-  const [value, setValue] = useState("");
+interface IPost extends Post {
+  blogBody: any;
+}
+
+const PostCreateEdit = ({ post }: { post: null | IPost }) => {
+  const [value, setValue] = useState(!post ? "welcome " : post.blogBody.body);
+
+  const defaultValues: {
+    title: string;
+    company: string;
+    description: string;
+    tags: string;
+    category: (typeof CATEGORIES)[number];
+    keywords: string;
+  } = !post
+    ? {
+        title: "PSPCL jobs ",
+        company: "PSPCL",
+        description: "Govt teacher jobs",
+        tags: "20k salary last date 20th",
+        category: "JOB",
+        keywords: "PSPCL, Govt jobs, 20k salary",
+      }
+    : {
+        title: post.title,
+        company: post.company,
+        description: post.description,
+        tags: post.tags,
+        category: post.category as (typeof CATEGORIES)[number],
+        keywords: post.keywords,
+      };
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: "PSPCL jobs ",
-      company: "PSPCL",
-      description: "Govt teacher jobs",
-      tags: "20k salary last date 20th",
-      category: "JOB",
-      keywords: "PSPCL, Govt jobs, 20k salary",
-    },
+    defaultValues,
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -170,12 +190,16 @@ const Page = () => {
     });
     console.log(value);
     formData.append("blog", value);
-    createPost(formData).catch((e) => console.log(e));
+    if (post) {
+      formData.append("id", post.id as string);
+      updatePost(formData);
+    } else {
+      createPost(formData).catch((e) => console.log(e));
+    }
   }
 
   return (
-    <div className="container md:mt-12 mt-6">
-      <h1 className="text-3xl mb-6">Adding Blog</h1>
+    <div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
@@ -381,7 +405,6 @@ const Page = () => {
                   LinkImage,
                   List,
                   ListProperties,
-                  Markdown,
                   MediaEmbed,
                   Mention,
                   PageBreak,
@@ -411,14 +434,13 @@ const Page = () => {
                   TableToolbar,
                   TextPartLanguage,
                   TextTransformation,
-                  Title,
                   TodoList,
                   Underline,
                   Undo,
                 ],
                 licenseKey: "<YOUR_LICENSE_KEY>",
 
-                initialData: "<p>Hello from CKEditor 5 in React!</p>",
+                initialData: post ? post.blogBody.body : "",
               }}
               onChange={(event, editor) => {
                 const data = editor.getData();
@@ -435,4 +457,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default PostCreateEdit;
