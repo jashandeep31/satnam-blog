@@ -1,4 +1,4 @@
-import PostCreateEdit from "@/components/post-create-end";
+import PostCreateEdit from "@/components/post-create-edit";
 import { db } from "@/lib/db";
 import React from "react";
 
