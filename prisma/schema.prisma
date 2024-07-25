@@ -78,6 +78,7 @@ model Post {
   description String
   tags        String
   company     String
+  state       State        @relation(fields: [stateId], references: [id])
   views       Int          @default(0)
   private     Boolean      @default(false)
   deleted     Boolean      @default(false)
@@ -86,6 +87,7 @@ model Post {
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   blogBody    BlogBody?
+  stateId     String
 }
 
 enum CategoryType {
@@ -103,4 +105,12 @@ model BlogBody {
   createdAt DateTime @default(now())
   post      Post     @relation(fields: [postId], references: [id])
   postId    String   @unique
+}
+
+model State {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+  Post      Post[]
 }

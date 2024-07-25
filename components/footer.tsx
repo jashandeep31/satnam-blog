@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 const Footer = () => {
@@ -6,24 +7,22 @@ const Footer = () => {
       name: "Quick Links ",
       links: [
         { name: "Home", url: "/" },
-        { name: "Categories", url: "/" },
-        { name: "Contact Us", url: "/" },
+        { name: "Contact Us", url: "/contact-us" },
+        { name: "About Us", url: "/about-us" },
       ],
     },
     {
       name: "Social Media",
       links: [
         { name: "Facebook", url: "/" },
-        { name: "Twitter", url: "/" },
         { name: "Instagram", url: "/" },
       ],
     },
     {
       name: "Terms and conditions",
       links: [
-        { name: "Facebook", url: "/" },
-        { name: "Twitter", url: "/" },
-        { name: "Instagram", url: "/" },
+        { name: "Privacy Policy", url: "/privacy-policy" },
+        { name: "Disclaimer", url: "/disclaimer" },
       ],
     },
   ];
@@ -43,7 +42,7 @@ const Footer = () => {
                     key={j}
                     className="text-sm text-muted-foreground hover:underline  mb-1"
                   >
-                    {link.name}
+                    <Link href={link.url}>{link.name}</Link>
                   </li>
                 ))}
               </ul>

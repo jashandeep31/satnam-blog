@@ -1,12 +1,14 @@
 "use client";
+import { Notification } from "@prisma/client";
 import { Search } from "lucide-react";
+import Link from "next/link";
 import React from "react";
 
-const AsideBar = () => {
+const AsideBar = ({ notifications }: { notifications: Notification[] }) => {
   return (
     <aside className="md:col-span-2">
       <div className="sticky top-6">
-        <div className="flex flex-wrap  gap-1 mb-3  justify-end  ">
+        <div className="md:flex  hidden flex-wrap  gap-1 mb-3  justify-end  ">
           <input
             type="text"
             className=" border block  border-primary/30  py-1 px-2"
@@ -21,53 +23,14 @@ const AsideBar = () => {
           </h2>
           <div>
             <ul className="max-h-48 overflow-auto">
-              <li className="border-b text-sm text-blue-500 py-2 px-1 underline">
-                Upate: Application date got extended till teh end of this month
-              </li>
-
-              <li className="border-b text-sm text-blue-500 py-2 px-1 underline">
-                Upate: Application date got extended till teh end of this month
-              </li>
-              <li className="border-b text-sm text-blue-500 py-2 px-1 underline">
-                Upate: Application date got extended till teh end of this month
-              </li>
-              <li className="border-b text-sm text-blue-500 py-2 px-1 underline">
-                Upate: Application date got extended till teh end of this month
-              </li>
-              <li className="border-b text-sm text-blue-500 py-2 px-1 underline">
-                Upate: Application date got extended till teh end of this month
-              </li>
-              <li className="border-b text-sm text-blue-500 py-2 px-1 underline">
-                Upate: Application date got extended till teh end of this month
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="border mt-12">
-          <h2 className="bg-primary py-3 text-white text-lg  text-center font-bold">
-            Admin cards
-          </h2>
-          <div>
-            <ul className="max-h-48 overflow-auto">
-              <li className="border-b text-sm text-blue-500 py-2 px-1 underline">
-                Upate: Application date got extended till teh end of this month
-              </li>
-
-              <li className="border-b text-sm text-blue-500 py-2 px-1 underline">
-                Upate: Application date got extended till teh end of this month
-              </li>
-              <li className="border-b text-sm text-blue-500 py-2 px-1 underline">
-                Upate: Application date got extended till teh end of this month
-              </li>
-              <li className="border-b text-sm text-blue-500 py-2 px-1 underline">
-                Upate: Application date got extended till teh end of this month
-              </li>
-              <li className="border-b text-sm text-blue-500 py-2 px-1 underline">
-                Upate: Application date got extended till teh end of this month
-              </li>
-              <li className="border-b text-sm text-blue-500 py-2 px-1 underline">
-                Upate: Application date got extended till teh end of this month
-              </li>
+              {notifications.map((notification, index) => (
+                <li
+                  className="border-b text-sm text-blue-500 py-2 px-1 underline"
+                  key={index}
+                >
+                  <Link href={notification.link}>{notification.title}</Link>
+                </li>
+              ))}
             </ul>
           </div>
         </div>

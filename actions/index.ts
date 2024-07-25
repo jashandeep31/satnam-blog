@@ -1,6 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
+import { State } from "@prisma/client";
 import z from "zod";
 const CATEGORIES = [
   "ADMIT_CARD",
@@ -32,6 +33,10 @@ const postValidationSchema = z.object({
     .min(1, { message: "Company name cannot be empty" })
     .max(100, { message: "Company name cannot exceed 100 characters" }),
   category: z.enum(CATEGORIES),
+  state: z
+    .string()
+    .min(1, { message: "State name cannot be empty" })
+    .max(100, { message: "state name cannot exceed 100 characters" }),
 });
 
 export async function createPost(formData: FormData): Promise<string> {
@@ -43,9 +48,11 @@ export async function createPost(formData: FormData): Promise<string> {
       keywords: formData.get("keywords"),
       company: formData.get("company"),
       category: formData.get("category"),
+      state: formData.get("state"),
     });
 
     console.log(formData.get("blog"));
+
     const post = await db.post.create({
       data: {
         title: validatedData.title,
@@ -54,6 +61,7 @@ export async function createPost(formData: FormData): Promise<string> {
         keywords: validatedData.keywords,
         company: validatedData.company,
         category: validatedData.category,
+        stateId: validatedData.state,
       },
     });
     const blog = await db.blogBody.create({
@@ -80,6 +88,7 @@ export async function updatePost(formData: FormData): Promise<string> {
     keywords: formData.get("keywords"),
     company: formData.get("company"),
     category: formData.get("category"),
+    state: "this",
   });
 
   await db.$transaction(async (db) => {
@@ -107,4 +116,55 @@ export async function updatePost(formData: FormData): Promise<string> {
     });
   });
   return "success";
+}
+
+export async function createState(
+  stateName: string
+): Promise<"success" | "error"> {
+  try {
+    const state = await db.state.create({
+      data: {
+        name: stateName.toLocaleLowerCase(),
+      },
+    });
+    return "success";
+  } catch (error) {
+    return "error";
+  }
+}
+
+export async function getStates(): Promise<State[]> {
+  const states = await db.state.findMany();
+  return states;
+}
+
+export async function createNotification(
+  formData: FormData
+): Promise<"success" | "error"> {
+  try {
+    const TYPES = ["UPDATE", "LATEST"] as const;
+    const formSchema = z.object({
+      title: z.string(),
+      type: z.enum(TYPES),
+      link: z.string().url(),
+    });
+
+    const validatedData = formSchema.safeParse({
+      title: formData.get("title"),
+      type: formData.get("type"),
+      link: formData.get("link"),
+    });
+
+    if (validatedData.success) {
+      await db.notification.create({
+        data: {
+          ...validatedData.data,
+        },
+      });
+      return "success";
+    }
+    return "error";
+  } catch (error) {
+    return "error";
+  }
 }

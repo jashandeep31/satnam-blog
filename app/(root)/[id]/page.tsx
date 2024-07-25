@@ -14,7 +14,15 @@ const getPost = async (id: string) => {
   });
 };
 
+const getNotifications = async () => {
+  return db.notification.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+};
 const page = async ({ params }: { params: { id: string } }) => {
+  const notifications = await getNotifications();
   const post = await getPost(params.id);
   if (!post) {
     return <div>Post not found</div>;
@@ -37,7 +45,7 @@ const page = async ({ params }: { params: { id: string } }) => {
             dangerouslySetInnerHTML={{ __html: post?.blogBody?.body ?? "" }}
           ></div>
         </div>
-        <AsideBar />
+        <AsideBar notifications={notifications} />
       </div>
     </div>
   );

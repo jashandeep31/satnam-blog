@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -115,7 +115,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-label";
 import { toast } from "sonner";
-import { createPost } from "@/actions";
+import { createPost, getStates } from "@/actions";
+import { useRouter } from "next/navigation";
+import { State } from "@prisma/client";
 const CATEGORIES = [
   "ADMIT_CARD",
   "RESULT",
@@ -144,10 +146,16 @@ const formSchema = z.object({
     .string()
     .min(1, { message: "Company name cannot be empty" })
     .max(100, { message: "Company name cannot exceed 100 characters" }),
+  state: z
+    .string()
+    .min(1, { message: "State name cannot be empty" })
+    .max(100, { message: "state name cannot exceed 100 characters" }),
   category: z.enum(CATEGORIES),
 });
 
 const Page = () => {
+  const router = useRouter();
+  const [statesData, setStatesData] = useState<State[]>([]);
   const [value, setValue] = useState("");
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -168,10 +176,23 @@ const Page = () => {
     (Object.keys(values) as (keyof typeof values)[]).forEach((key) => {
       formData.append(key, values[key]);
     });
-    console.log(value);
     formData.append("blog", value);
-    createPost(formData).catch((e) => console.log(e));
+    createPost(formData)
+      .then(() => {
+        toast.success("Post is created", { id });
+        router.push("/admin/posts");
+      })
+      .catch((e) => toast.error("Something in the post goes wrong", { id }));
   }
+
+  const updateStates = async () => {
+    const states = await getStates();
+    setStatesData(states);
+  };
+
+  useEffect(() => {
+    updateStates();
+  }, []);
 
   return (
     <div className="container md:mt-12 mt-6">
@@ -284,6 +305,38 @@ const Page = () => {
                 <FormDescription>
                   Manage the category of hte post
                 </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="state"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>State</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select the state of the post" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {statesData.map((state: State, index: number) => (
+                      <SelectItem
+                        key={index}
+                        value={state.id}
+                        className="capitalize"
+                      >
+                        {state.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormDescription>Manage the state of the post</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
