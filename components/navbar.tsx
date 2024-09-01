@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
@@ -51,10 +52,18 @@ const Navbar = () => {
   ];
   return (
     <div className="container flex p-0 justify-between flex-col items-center bg-primary text-white  ">
-      <h1 className="md:text-3xl text-xl my-6 md:my-12 font-bold">
-        {" "}
+      {/* <h1 className="md:text-3xl text-xl my-6 md:my-12 font-bold">
         Rojgarseeker
-      </h1>
+      </h1> */}
+      <Link href={"/"}>
+        <Image
+          src={"/logo.png"}
+          className="h-20 w-auto   my-6 md:my-12"
+          width={390}
+          height={136}
+          alt="rojgarseeker"
+        />
+      </Link>
       <div className="md:flex hidden  gap-6 bg-foreground  py-2 w-full justify-center nav-links">
         {desktopLinks.map((item, index) => (
           <nav key={index}>
