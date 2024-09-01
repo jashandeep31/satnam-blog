@@ -1,7 +1,14 @@
-import NextAuth from "next-auth";
+import NextAuth, { User } from "next-auth";
 import Google from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
+declare module "next-auth" {
+  interface Session {
+    user: {
+      role: "USER" | "ADMIN";
+    } & User;
+  }
+}
 
 const prisma = new PrismaClient();
 

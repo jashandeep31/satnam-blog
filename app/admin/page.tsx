@@ -1,7 +1,9 @@
+import { auth } from "@/lib/auth";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import React from "react";
 
-const page = () => {
+const page = async () => {
   const adminLinks: { name: string; link: string }[] = [
     {
       name: "Posts",
@@ -13,10 +15,20 @@ const page = () => {
     },
     { name: "States", link: "admin/states" },
   ];
+  const session = await auth();
+  if (!session?.user) {
+    redirect("api/auth/signin");
+  }
+  if (session.user.role !== "ADMIN") {
+    redirect("/");
+  }
   return (
     <div>
       <div className="container md:mt-12 mt-6">
-        <h1 className="text-lg font-bold ">Admin Controls</h1>
+        <h1 className="text-lg font-bold ">Admin Controls </h1>
+        <p className="text-sm text-muted-foreground ">
+          Welcome {session.user.name} as {session.user.role}
+        </p>
         <div className="grid gap-6 md:grid-cols-4">
           {adminLinks.map((link, index) => (
             <Link

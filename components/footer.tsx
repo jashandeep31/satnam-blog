@@ -50,7 +50,9 @@ const Footer = () => {
           ))}
         </div>
         <div className="pb-3 pt-6 text-center">
-          <p className="text-sm text-muted-foreground">CopyRight </p>
+          <p className="text-sm text-muted-foreground">
+            Copyright: @rojgarseeker.com{" "}
+          </p>
         </div>
       </footer>
     </div>

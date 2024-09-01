@@ -45,8 +45,13 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  role RoleEnum @default(USER)
 
   @@map("users")
+}
+enum RoleEnum{
+  USER 
+  ADMIN
 }
 
 model VerificationToken {
@@ -96,6 +101,7 @@ enum CategoryType {
   JOB
   IMPORTANT
   ANSWER_KEY
+  GOVT_SCHEMES
 }
 
 model BlogBody {

@@ -1,7 +1,18 @@
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import React from "react";
 
-const layout = ({ children }: { children: React.ReactNode }) => {
+const layout = async ({ children }: { children: React.ReactNode }) => {
+  const session = await auth();
+
+  if (!session?.user) {
+    redirect("/api/auth/signin");
+  }
+  if (session.user.role !== "ADMIN") {
+    redirect("/");
+  }
+
   const links: { name: string; link: string }[] = [
     {
       name: "Admin Home",

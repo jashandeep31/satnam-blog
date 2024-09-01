@@ -8,7 +8,7 @@ const AsideBar = ({ notifications }: { notifications: Notification[] }) => {
   return (
     <aside className="md:col-span-2">
       <div className="sticky top-6">
-        <div className="md:flex  hidden flex-wrap  gap-1 mb-3  justify-end  ">
+        {/* <div className="md:flex  hidden flex-wrap  gap-1 mb-3  justify-end  ">
           <input
             type="text"
             className=" border block  border-primary/30  py-1 px-2"
@@ -16,7 +16,7 @@ const AsideBar = ({ notifications }: { notifications: Notification[] }) => {
           <button className="bg-primary text-white  px-2">
             <Search size={20} />
           </button>
-        </div>
+        </div> */}
         <div className="border ">
           <h2 className="bg-primary py-3 text-white text-lg  text-center font-bold">
             Notifications

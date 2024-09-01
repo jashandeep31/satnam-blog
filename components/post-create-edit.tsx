@@ -453,6 +453,7 @@ const PostCreateEdit = ({ post }: { post: null | IPost }) => {
           <Button type="submit">Submit</Button>
         </form>
       </Form>
+      <div className="mt-6 mb-20"></div>
     </div>
   );
 };
