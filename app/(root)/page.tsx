@@ -147,6 +147,7 @@ const page = async ({
               <span className="text-muted-foreground px-2">
                 <Filter size={16} />
               </span>
+
               {CATEGORIES.map((category, index) => (
                 <Link
                   href={`/?state=${currentState}&page=${1}&category=${category}`}
@@ -185,9 +186,34 @@ const page = async ({
               ))}
             </div>
           </div>
-          <div className="mt-6 grid gap-3">
+          {/* <div className="mt-6 grid gap-3">
             {posts.map((post: IPost) => (
               <Card key={post.id} post={post} />
+            ))}
+          </div> */}
+          <div className="grid grid-cols-3 gap-4  mt-6">
+            {CATEGORIES.map((category, index) => (
+              <div key={index} className=" border  border-black w-full ">
+                <div className="bg-primary">
+                  <h2 className="text-2xl text-white py-3 font-bold text-center ">
+                    {category}
+                  </h2>
+                </div>
+                <div className="p-2">
+                  {posts
+                    .filter((post) => post.category === category)
+                    .map((post) => (
+                      <Link
+                        href={"/"}
+                        className="text-blue-500 underline hover:text-blue-700  flex items-center"
+                        key={post.id}
+                      >
+                        <Dot className="inline" size={18} />
+                        {post.title}
+                      </Link>
+                    ))}
+                </div>
+              </div>
             ))}
           </div>
           <div className="mt-6">
